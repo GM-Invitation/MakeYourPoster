@@ -1,271 +1,608 @@
-﻿<!DOCTYPE html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Make Your Poster</title>
-    <meta http-equiv="x-ua-compatible" content="ie=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <!--For Crop Image-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=ABeeZee&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.css" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" href="css/StyleSheet.css">
-    <!--For Icon-->
-    <link href="assets/css/css.css" rel="stylesheet" type="text/css" />
     <style>
-        #upload-demo {
-            width: 250px;
-            height: 250px;
-            padding-bottom: 25px;
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --blue: #3b82f6;
+            --blue-dark: #1d4ed8;
+            --slate: #334155;
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --white: #ffffff;
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+
+        html, body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--gray-50);
+            color: #475569;
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+
+        /* Top blue bar */
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 300px;
+            background: var(--blue);
+            z-index: -1;
+        }
+
+        /* ── Sidebar ── */
+        .sidebar {
+            position: fixed;
+            top: 0; bottom: 0; left: 0;
+            width: 16rem;
+            background: var(--white);
+            border-radius: 1rem;
+            margin: 1rem 0 1rem 1.5rem;
+            box-shadow: var(--shadow-xl);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 10;
+        }
+        .sidebar-inner {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
+            scrollbar-width: none;
+        }
+        .sidebar-inner::-webkit-scrollbar { display: none; }
+
+        .sidebar-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #1e293b;
+            line-height: 1.4;
+        }
+
+        .field-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: .5rem;
+            font-size: .875rem;
+            color: #1e293b;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .field-input {
+            width: 100%;
+            border: 1px solid #cbd5e1;
+            border-radius: .5rem;
+            padding: .75rem;
+            font-size: .875rem;
+            color: #334155;
+            font-family: 'Poppins', sans-serif;
+            outline: none;
+            transition: border-color .2s;
+        }
+        .field-input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(59,130,246,.15); }
+
+        .field-group { margin-bottom: 1rem; }
+
+        /* Photo choose button */
+        .choose-file-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            background: #eff6ff;
+            color: var(--blue);
+            font-size: .8rem;
+            font-weight: 600;
+            padding: .5rem 1rem;
+            border-radius: 9999px;
+            cursor: pointer;
+            border: none;
+            transition: background .2s;
+        }
+        .choose-file-btn:hover { background: #dbeafe; }
+
+        .sidebar-footer {
+            padding: 1rem;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .download-btn {
+            width: 100%;
+            padding: .6rem;
+            background: var(--slate);
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            font-size: .75rem;
+            font-weight: 600;
+            border: none;
+            border-radius: .5rem;
+            cursor: pointer;
+            text-transform: capitalize;
+            transition: background .2s, transform .1s, box-shadow .2s;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / .15);
+            letter-spacing: .03em;
+        }
+        .download-btn:hover { background: #1e293b; transform: translateY(-1px); box-shadow: 0 6px 12px -2px rgb(0 0 0/.2); }
+        .download-btn:active { transform: translateY(0); }
+
+        /* ── Main ── */
+        .main {
+            margin-left: 18rem;
+            min-height: 100vh;
+            padding: 0 1.5rem 2rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: var(--white);
+            border-radius: 1rem;
+            margin-top: 1.25rem;
+            padding: .75rem 1.5rem;
+            box-shadow: 0 1px 3px rgb(0 0 0/.08);
+        }
+        .navbar h6 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        /* Canvas card */
+        .canvas-card {
+            background: var(--white);
+            border-radius: 1rem;
+            box-shadow: var(--shadow-xl);
+            margin-top: 1.25rem;
+            padding: 2rem 1rem 1.5rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        #artboard_print {
+            position: relative;
+            width: fit-content;
+            max-width: 100%;
+            overflow: hidden;
+            line-height: 0;
+        }
+
+        #artboard_print img.template-img {
+            display: block;
+            max-height: 80vh;
+            width: auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        #previewImg_0 {
+            position: absolute;
+            z-index: 5;
+            display: none;
+            object-fit: cover;
+        }
+
+        .text-overlay {
+            position: absolute;
+            z-index: 20;
+            text-align: center;
+            pointer-events: none;
+        }
+
+        .text-overlay h6 {
+            font-family: 'ABeeZee', sans-serif;
+            color: #fff;
+            font-weight: 500;
+            line-height: 1.2;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        /* Footer */
+        .page-footer {
+            background: var(--blue);
+            border-radius: .5rem;
+            margin-top: 1rem;
+            padding: .5rem 1rem;
+            text-align: center;
+            color: #fff;
+            font-size: .875rem;
+        }
+        .page-footer a { color: #fff; font-weight: 600; text-decoration: underline; }
+
+        /* ── Mobile panel (shown on small screens) ── */
+        .mobile-panel {
+            display: none;
+            background: var(--white);
+            border-radius: 1rem;
+            box-shadow: var(--shadow-xl);
+            margin-top: 1.25rem;
+            padding: 1rem;
+        }
+
+        /* ── Crop Modal ── */
+        .modal-overlay {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-box {
+            background: #fff;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            width: 340px;
+            max-width: 95vw;
+            box-shadow: var(--shadow-xl);
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .modal-header span { font-weight: 600; font-size: 1rem; color: #1e293b; }
+        .modal-close {
+            background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #64748b;
+        }
+        .modal-body { display: flex; justify-content: center; margin-bottom: 1rem; }
+        .modal-footer { display: flex; justify-content: flex-end; }
+        .btn-crop {
+            background: var(--blue); color: #fff; border: none;
+            padding: .5rem 1.5rem; border-radius: .5rem; font-size: .875rem;
+            font-weight: 600; cursor: pointer; font-family: 'Poppins', sans-serif;
+            transition: background .2s;
+        }
+        .btn-crop:hover { background: var(--blue-dark); }
+
+        #upload-demo { width: 250px; height: 250px; }
+
+        /* Success toast */
+        .toast {
+            position: fixed; bottom: 2rem; right: 2rem;
+            background: #22c55e; color: #fff;
+            padding: .75rem 1.5rem; border-radius: .75rem;
+            font-size: .875rem; font-weight: 500;
+            box-shadow: var(--shadow-xl);
+            opacity: 0; transform: translateY(1rem);
+            transition: opacity .3s, transform .3s;
+            pointer-events: none; z-index: 9999;
+        }
+        .toast.show { opacity: 1; transform: translateY(0); }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar { display: none; }
+            .main { margin-left: 0; }
+            .mobile-panel { display: block; }
         }
     </style>
 </head>
 <body>
-    <div id="___gatsby">
-        <div style="outline:none" tabindex="-1" id="gatsby-focus-wrapper">
-            <div>
-                <div class="container" style="display:flex;justify-content:center;background:#3E163A">
-                    <div class="logo" style="display:flex;align-items:center;flex-direction:column;max-width:fit-content">
-                        <div style="font-weight:500;font-size:20px;color:#fff">
-                            MAKE YOUR POSTER
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="pages__Container-sc-1flae6u-9 eSHHpD">
-                <div class="pages__C2-sc-1flae6u-7 VSFoJ">
-                    <div class="pages__C3-sc-1flae6u-6 hpHjrr">
-                        <div class="konvajs-content" role="presentation" style="position: relative; user-select: none; width: 500px; height: 500px;">
-                            <canvas id="myCanvas" width="1106" height="1106" style="padding: 0px; margin: 0px; border: 0px; background: transparent; position: absolute; top: 0px; left: 0px; width: 500px; height: 500px; display: block;"></canvas>
-                        </div>
-                    </div>
-                    <div class="pages__C3-sc-1flae6u-6 hpHjrr">
-                        <h1 class="pages__Container3-sc-1flae6u-3 earCAW">
-                            <div>
-                                <div style="background:#C07019" class="Upload__Container1-sc-1lmv8gl-0 eKNSaz">
-                                    <h1 style="font-weight:500;color:#fff" class="Upload__Heading1-sc-1lmv8gl-2 fmtkYn">
-                                        Upload Profile Pic
-                                    </h1>
-                                    <div class="Upload__Section1-sc-1lmv8gl-1 iKcpiW">
-                                        <div style="color:#fff;font-size:13px;line-height:18px" class="Upload__Description-sc-1lmv8gl-3 haAgSI">
-                                            Click on the upload icon to upload profile pic. You can repeat this step to choose another profile pic.
-                                        </div>
-                                        <div>
-                                            <span class="Upload__ButtonContainer-sc-1lmv8gl-4 koFGgQ">
-                                                <button id="btn" class="Upload__Button-sc-1lmv8gl-5 bTShrr">
-                                                    <label for="contained-button-file">
-                                                        <i class="uil-upload" style="font-size: 35px;cursor:pointer;"></i>
-                                                    </label>
-                                                </button>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div style="background:#C07019" class="InputText__Container2-sc-kmji29-0 zUzXM">
-                                    <div class="InputText__Section1-sc-kmji29-2 gFlUcK">
-                                        <h1 class="InputText__Heading1-sc-kmji29-1 tmgdJ">Your Name</h1>
-                                        <label for="material-switch"></label>
-                                    </div>
-                                    <div class="InputText__Section2-sc-kmji29-3 ePhaEX">
-                                        <input id="nameInput" type="text" name="username" maxlength="16" placeholder="Your Name" class="InputText__FormFillup-sc-kmji29-5 eciXpP" />
-                                    </div>
-                                </div>
-                            </div>
-                        </h1>
-                        <div class="Download__Container-sc-1ppbm4s-0 ifLmIl">
-                            <div class="Download__DownloadContainer-sc-1ppbm4s-1 hVLGbo">
-                                <button id="dwnbtn" style="background-color:#3F173B;color:#fff;font-weight:500;cursor:pointer;font-size:20px" class="Download__Button-sc-1ppbm4s-2 laNvqH">DOWNLOAD</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="footer">
-                <div class="footerLine">
-                    <a href="https://www.ashvillp.com/" target="_blank" style="text-decoration:none">
-                        <div style="margin:10px 0 10px 0px">
-                            <img src="static/Ashvilogo.png" width="80px" />
-                        </div>
-                    </a>
-                    <div style="color:#000;margin:10px 0 10px 0px;text-align:center">2022 © All rights reserved.Ashvi Consultancy Service Pvt Ltd   </div>
-                </div>
-            </div>
+<div class="top-bar"></div>
+
+<!-- ── Sidebar (desktop) ── -->
+<aside class="sidebar">
+    <div class="sidebar-inner">
+        <p class="sidebar-title">Enter your details</p>
+
+        <div class="field-group">
+            <span class="field-label">Name</span>
+            <input type="text" id="artboard_input_1" class="field-input" placeholder="Your name…">
         </div>
 
-        <div id="gatsby-announcer" style="position:absolute;top:0;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0, 0, 0, 0);white-space:nowrap;border:0" aria-live="assertive" aria-atomic="true">
+        <div class="field-group">
+            <span class="field-label">Photo</span>
+            <button class="choose-file-btn" id="chooseFileBtn">
+                <i class="fa-solid fa-image"></i> Choose file
+            </button>
         </div>
+    </div>
+    <div class="sidebar-footer">
+        <button class="download-btn" onclick="getInputValue()">
+            <i class="fa-solid fa-download" style="margin-right:.35rem"></i> Download
+        </button>
+    </div>
+</aside>
 
-        <div class="modal fade bs-example-modal-center" id="cropImagePop" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body d-flex justify-content-center align-items-center">
-                        <div id="upload-demo" class="center-block"></div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" id="cropImageBtn" class="btn btn-primary">Crop</button>
-                    </div>
-                </div>
+<!-- ── Main content ── -->
+<main class="main">
+    <!-- Navbar -->
+    <nav class="navbar">
+        <h6>Make Your Poster</h6>
+    </nav>
+
+    <!-- Mobile panel -->
+    <div class="mobile-panel">
+        <p class="sidebar-title">Enter your details</p>
+        <div class="field-group">
+            <span class="field-label">Name</span>
+            <input type="text" id="artboard_input_mob_1" class="field-input" placeholder="Your name…">
+        </div>
+        <div class="field-group">
+            <span class="field-label">Photo</span>
+            <button class="choose-file-btn" id="chooseFileBtnMob">
+                <i class="fa-solid fa-image"></i> Choose file
+            </button>
+        </div>
+        <button class="download-btn" onclick="getInputValue()" style="margin-top:.5rem">
+            <i class="fa-solid fa-download" style="margin-right:.35rem"></i> Download
+        </button>
+    </div>
+
+    <!-- Canvas card -->
+    <div class="canvas-card">
+        <div id="artboard_print">
+            <img id="previewImg_0" alt="uploaded photo">
+            <img class="template-img" id="templateImg" src="/static/CharkhoGreen.png" alt="Poster template" onerror="this.style.background='linear-gradient(135deg,#667eea,#764ba2)';this.style.width='500px';this.style.height='500px';this.removeAttribute('src')">
+            <div class="text-overlay" id="p_text_div_1">
+                <h6 id="p_text_1">Name</h6>
             </div>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.min.js" integrity="sha512-ykZ1QQr0Jy/4ZkvKuqWn4iF3lqPZyij9iRv6sGqLRdTPkY69YX6+7wvVGmsdBbiIfN/8OdsI7HABjvEok6ZopQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script> <!-- Include Croppie library -->
 
-    <script>
-        window.addEventListener('DOMContentLoaded', function () {
-            var canvas = document.getElementById('myCanvas');
-            var context = canvas.getContext('2d');
-            var uploadedImage;
-            var name;
-            var img;
-            var $uploadCrop,
-                tempFilename,
-                rawImg,
-                imageId;
+    <!-- Hidden high-res artboard for download -->
+    <div id="artboard_print_hidden" style="position:absolute;left:-9999px;top:-9999px;display:none;width:1106px;">
+        <div style="position:relative;width:1106px;height:1106px;overflow:hidden;">
+            <img id="previewImgHidden_0" style="position:absolute;z-index:5;display:none;" alt="">
+            <img id="templateImgHidden" src="/static/CharkhoGreen.png" style="width:1106px;height:1106px;position:relative;z-index:10;" alt="">
+            <div id="p_text_div_hidden_1" style="position:absolute;z-index:20;text-align:center;">
+                <h6 id="p_text_hidden_1" style="font-family:'ABeeZee',sans-serif;color:#fff;font-weight:500;font-size:55px;white-space:pre-wrap;word-wrap:break-word;line-height:1.2;">Name</h6>
+            </div>
+        </div>
+    </div>
 
-            window.addEventListener('load', function () {
-                img = new Image();
-                img.onload = function () {
-                    context.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    context.save();
-                };
-                img.src = 'static/CharkhoGreen.png';
-                $('#cropImagePop').modal('hide');
-            });
+    <footer class="page-footer">
+        Powered by <a href="#">Poster Maker</a>
+    </footer>
+</main>
 
-            function drawOverlay() {
-                context.clearRect(0, 0, canvas.width, canvas.height);
+<!-- Crop Modal -->
+<div class="modal-overlay" id="cropModal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <span>Crop Photo</span>
+            <button class="modal-close" id="modalClose"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="modal-body">
+            <div id="upload-demo"></div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-crop" id="cropImageBtn">Crop &amp; Apply</button>
+        </div>
+    </div>
+</div>
 
-                // Draw the uploaded image if available
-                if (uploadedImage) {
-                    var imageSize = Math.min(canvas.width, canvas.height) * 0.38;
-                    var x = 158;
-                    var y = 340;
-                    var newHeight = imageSize * 1;
-                    var borderRadius = 0;
+<!-- Toast -->
+<div class="toast" id="toast">✓ Image downloaded successfully!</div>
 
-                    context.save();
-                    context.beginPath();
-                    context.moveTo(x + borderRadius, y);
-                    context.lineTo(x + imageSize - borderRadius, y);
-                    context.arcTo(x + imageSize, y, x + imageSize, y + borderRadius, borderRadius);
-                    context.lineTo(x + imageSize, y + newHeight - borderRadius);
-                    context.arcTo(x + imageSize, y + newHeight, x + imageSize - borderRadius, y + newHeight, borderRadius);
-                    context.lineTo(x + borderRadius, y + newHeight);
-                    context.arcTo(x, y + newHeight, x, y + newHeight - borderRadius, borderRadius);
-                    context.lineTo(x, y + borderRadius);
-                    context.arcTo(x, y, x + borderRadius, y, borderRadius);
-                    context.closePath();
-                    context.clip();
+<!-- Hidden file input -->
+<input type="file" id="fileInput" accept="image/*" style="display:none">
 
-                    context.drawImage(uploadedImage, 0, 0, uploadedImage.width, uploadedImage.height, x, y, imageSize, newHeight);
-                    context.restore();
-                }
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+(function(){
+    /* ── state ── */
+    var uploadedImageSrc = null;
+    var rawImg = null;
+    var $uploadCrop = null;
+    var templateLoaded = false;
 
-               
-                context.drawImage(img, 0, 0, canvas.width, canvas.height);
+    /* actual template dimensions (will be measured after img loads) */
+    var TEMPLATE_W = 1106;
+    var TEMPLATE_H = 1106;
 
-             
-                if (name) {
-                    context.fillStyle = 'White';
-                    context.font = '55px Arial bold';
-                    context.textAlign = 'center';
-                    context.fillText(name, 342, 768);
-                }
-            }
+    /* Text placement percentages derived from reference code */
+    /* original: xc=52, yc=557, wc=471, hc=97 at 1000×1000 */
+    var TEXT_X_PCT  = 52   / 1000;
+    var TEXT_Y_PCT  = 557  / 1000;
+    var TEXT_W_PCT  = 471  / 1000;
+    var TEXT_H_PCT  = 97   / 1000;
+    var FONT_PX_PCT = 27   / 1000;
 
+    /* Photo placement percentages */
+    /* original: xc=63, yc=224, wc=290, hc=287 at 1000×1000 */
+    var IMG_X_PCT = 63  / 1000;
+    var IMG_Y_PCT = 224 / 1000;
+    var IMG_W_PCT = 290 / 1000;
+    var IMG_H_PCT = 287 / 1000;
 
+    /* ── helpers ── */
+    function positionOverlay(){
+        var $ap = $('#artboard_print');
+        var w = $ap.width();
+        var h = $ap.height();
+        if(!w || !h) return;
 
-            document.getElementById('btn').addEventListener('click', function () {
-                var input = document.createElement('input');
-                input.type = 'file';
-                input.accept = 'image/*';
-
-                input.addEventListener('change', function (event) {
-                    var file = event.target.files[0];
-                    var reader = new FileReader();
-
-                    reader.onload = function (e) {
-                        $('.upload-demo').addClass('ready');
-                        $('#cropImagePop').modal('show');
-                        rawImg = e.target.result;
-                    };
-                    if (file) {
-                        reader.readAsDataURL(file);
-                    }
-                });
-                input.click();
-            });
-
-
-            var nameInput = document.getElementById('nameInput');
-            nameInput.addEventListener('input', function () {
-                context.clearRect(0, 0, canvas.width, canvas.height);
-                name = nameInput.value;
-                drawOverlay();
-            });
-
-            document.getElementById('dwnbtn').addEventListener('click', function () {
-                var canvas = document.getElementById('myCanvas');
-                var dataURL = canvas.toDataURL();
-                var link = document.createElement('a');
-
-                var fileName = nameInput.value.trim() || 'your_image';
-                link.download = fileName + '.png';
-                link.href = dataURL;
-                link.click();
-                window.location.reload();
-            });
-
-            var $uploadCrop = $('#upload-demo').croppie({
-                viewport: {
-                    width: 180,
-                    height: 180,
-                    type: 'circle'
-                },
-                enforceBoundary: true,
-                enableExif: true
-            });
-
-            $('#cropImagePop').on('shown.bs.modal', function () {
-                $uploadCrop.croppie('bind', {
-                    url: rawImg
-                }).then(function () {
-                    console.log('jQuery bind complete');
-                });
-            });
-
-            $('#cropImageBtn').on('click', function () {
-                $uploadCrop.croppie('result', {
-                    type: 'canvas',
-                    size: {
-                        width: 500,
-                        height: 500,
-                    }
-                }).then(function (resp) {
-                    uploadedImage = new Image();
-                    uploadedImage.onload = function () {
-                        drawOverlay();
-                    };
-                    uploadedImage.src = resp;
-                    $('#cropImagePop').modal('hide');
-                });
-            });
-
-            $('#cropImageBtn').on('click', function (ev) {
-                $uploadCrop.croppie('result', {
-                    type: 'base64',
-                    format: 'jpeg',
-                    size: { width: 150, height: 200 }
-                }).then(function (resp) {
-                    $('#cropImagePop').modal('hide');
-                });
-            });
+        // text overlay
+        $('#p_text_div_1').css({
+            marginLeft : (TEXT_X_PCT  * w) + 'px',
+            marginTop  : (TEXT_Y_PCT  * h) + 'px',
+            width      : (TEXT_W_PCT  * w) + 'px',
+            height     : (TEXT_H_PCT  * h) + 'px',
+            position   : 'absolute',
+            top        : 0,
+            left       : 0
         });
-    </script>
+        $('#p_text_1').css('fontSize', (FONT_PX_PCT * w) + 'px');
+
+        // photo overlay
+        if(uploadedImageSrc){
+            $('#previewImg_0').css({
+                display    : 'block',
+                position   : 'absolute',
+                top        : 0,
+                left       : 0,
+                marginLeft : (IMG_X_PCT * w) + 'px',
+                marginTop  : (IMG_Y_PCT * h) + 'px',
+                width      : (IMG_W_PCT * w) + 'px',
+                height     : (IMG_H_PCT * h) + 'px',
+                objectFit  : 'cover',
+                zIndex     : 5
+            });
+        }
+    }
+
+    function positionHiddenOverlay(){
+        var w = TEMPLATE_W;
+        var h = TEMPLATE_H;
+        $('#p_text_div_hidden_1').css({
+            position   : 'absolute',
+            top        : 0,
+            left       : 0,
+            marginLeft : (TEXT_X_PCT  * w) + 'px',
+            marginTop  : (TEXT_Y_PCT  * h) + 'px',
+            width      : (TEXT_W_PCT  * w) + 'px',
+            height     : (TEXT_H_PCT  * h) + 'px'
+        });
+        $('#p_text_hidden_1').css('fontSize', (FONT_PX_PCT * w) + 'px');
+
+        if(uploadedImageSrc){
+            $('#previewImgHidden_0').css({
+                display    : 'block',
+                position   : 'absolute',
+                top        : 0,
+                left       : 0,
+                marginLeft : (IMG_X_PCT * w) + 'px',
+                marginTop  : (IMG_Y_PCT * h) + 'px',
+                width      : (IMG_W_PCT * w) + 'px',
+                height     : (IMG_H_PCT * h) + 'px',
+                objectFit  : 'cover',
+                zIndex     : 5
+            }).attr('src', uploadedImageSrc);
+        }
+    }
+
+    function syncText(){
+        var isMobile = window.innerWidth <= 1024;
+        var v = isMobile
+            ? $('#artboard_input_mob_1').val()
+            : $('#artboard_input_1').val();
+        $('#p_text_1').text(v || 'Name');
+        $('#p_text_hidden_1').text(v || 'Name');
+    }
+
+    /* ── init croppie ── */
+    function initCroppie(){
+        if($uploadCrop) return;
+        $uploadCrop = $('#upload-demo').croppie({
+            viewport     : { width: 200, height: 200, type: 'circle' },
+            enforceBoundary: true,
+            enableExif   : true
+        });
+    }
+
+    /* ── on template load ── */
+    $('#templateImg').on('load', function(){
+        templateLoaded = true;
+        /* slight delay to let browser finish layout */
+        setTimeout(positionOverlay, 50);
+    });
+    /* If already cached */
+    if($('#templateImg')[0].complete){ templateLoaded = true; setTimeout(positionOverlay, 50); }
+
+    /* ── text input ── */
+    $('#artboard_input_1, #artboard_input_mob_1').on('input', function(){
+        syncText();
+    });
+
+    /* ── file choose buttons ── */
+    function openFilePicker(){
+        initCroppie();
+        $('#fileInput').val('').trigger('click');
+    }
+    $('#chooseFileBtn, #chooseFileBtnMob').on('click', openFilePicker);
+
+    $('#fileInput').on('change', function(){
+        var file = this.files[0];
+        if(!file) return;
+        var reader = new FileReader();
+        reader.onload = function(e){
+            rawImg = e.target.result;
+            $('#cropModal').addClass('active');
+            $uploadCrop.croppie('bind', { url: rawImg });
+        };
+        reader.readAsDataURL(file);
+    });
+
+    /* ── close modal ── */
+    $('#modalClose').on('click', function(){
+        $('#cropModal').removeClass('active');
+    });
+    $('#cropModal').on('click', function(e){
+        if(e.target === this) $('#cropModal').removeClass('active');
+    });
+
+    /* ── crop ── */
+    $('#cropImageBtn').on('click', function(){
+        $uploadCrop.croppie('result',{
+            type:'base64', format:'png',
+            size:{ width: Math.round(IMG_W_PCT * TEMPLATE_W), height: Math.round(IMG_H_PCT * TEMPLATE_H) }
+        }).then(function(resp){
+            uploadedImageSrc = resp;
+            $('#previewImg_0').attr('src', resp);
+            $('#previewImgHidden_0').attr('src', resp);
+            $('#cropModal').removeClass('active');
+            positionOverlay();
+        });
+    });
+
+    /* ── download ── */
+    window.getInputValue = function(){
+        syncText();
+        positionHiddenOverlay();
+
+        var $hidden = $('#artboard_print_hidden');
+        $hidden.css('display','block');
+
+        /* use the inner wrapper that has the actual template */
+        var el = $hidden.children()[0];
+        html2canvas(el, { useCORS: true, allowTaint: true, scale: 1 }).then(function(canvas){
+            canvas.toBlob(function(blob){
+                var url = URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.download = 'poster.png';
+                a.href = url;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                showToast();
+            }, 'image/png');
+        });
+
+        $hidden.css('display','none');
+    };
+
+    function showToast(){
+        var t = document.getElementById('toast');
+        t.classList.add('show');
+        setTimeout(function(){ t.classList.remove('show'); }, 3000);
+    }
+
+    /* ── reposition on resize ── */
+    $(window).on('resize', positionOverlay);
+
+    /* ── initial position ── */
+    $(window).on('load', function(){ positionOverlay(); });
+})();
+</script>
 </body>
 </html>
